@@ -1,0 +1,7 @@
+{
+  "name": "defense-line",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
