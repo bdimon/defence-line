@@ -98,7 +98,7 @@ export class HomeComponent implements OnInit {
   }
 
   openDetail(item: any) {
-    this.router.navigate(['/detail', item.id]);
+    this.router.navigate(['/detail', item.id], { queryParams: { searchTerm: this.searchTerm } });
   }
 
  handleSearch(event: any) {

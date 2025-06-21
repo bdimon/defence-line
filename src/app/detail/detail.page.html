@@ -42,7 +42,7 @@
         {{ post?._embedded?.author?.[0]?.name }}
       </ion-badge>
     </ion-row>
-    <div  padding [innerHTML]="post?.content?.rendered"></div>
+    <div  padding [innerHTML]="post?.content?.rendered | highlight: searchTerm"></div>
   </div>
   </div>  
 

@@ -14,10 +14,11 @@ import {
   IonList,
   IonAvatar,
   IonButtons,
-  IonBackButton,
+  IonBackButton
 } from '@ionic/angular/standalone';
 import { NgFor, NgIf, DatePipe } from '@angular/common';
 import { WpService } from '../services/wp.service';
+import { HighlightPipe } from '../pipes/highlight.pipe'; // Импортируем наш новый пайп
 
 @Component({
   selector: 'app-detail',
@@ -42,7 +43,9 @@ import { WpService } from '../services/wp.service';
     NgFor,
     NgIf,
     DatePipe,
+    HighlightPipe
   ],
+
   providers: [DatePipe]
 })
 export class DetailPage implements OnInit {
@@ -52,8 +55,12 @@ export class DetailPage implements OnInit {
   page = 1;
   id: number | null = null;
   public showMore: boolean = true; // При первой загрузке true
+  searchTerm: string = '';
 
-  constructor(private route: ActivatedRoute, public api: WpService) {}
+
+  constructor(private route: ActivatedRoute, public api: WpService) {
+
+  }
 
   ngOnInit() {
     const param = this.route.snapshot.paramMap.get('id');
@@ -69,6 +76,7 @@ export class DetailPage implements OnInit {
         this.showMore = true;
         this.getComments();
       });
+      this.searchTerm = this.route.snapshot.queryParams['searchTerm'] || '';
     } else {
       // id некорректный
       console.error('Некорректный id:', id);
