@@ -56,7 +56,7 @@
       <ion-card-title align="center" [innerHTML]="item.title.rendered | highlight: searchTerm"></ion-card-title>
       <ion-row>
         <ion-badge color="secondary">
-          {{ getCatName(item.categories[0]) }}
+          {{ item.categoryName }}
         </ion-badge>
         <ion-badge color="light">
           <ion-icon name="time"></ion-icon>

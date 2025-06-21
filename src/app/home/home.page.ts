@@ -78,10 +78,16 @@ export class HomeComponent implements OnInit {
     this.wp.getPosts(this.page, this.category_id, this.searchTerm, orderby, order)
       .subscribe(
         (data: any[]) => {
+          // Обрабатываем данные, добавляя имя категории
+          const processedData = data.map(post => {
+            const categoryId = post.categories && post.categories.length > 0 ? post.categories[0] : 0;
+            return { ...post, categoryName: this.wp.getCatName(categoryId) };
+          });
+
           this.isLoading = false;
-          if (this.page === 1) this.items = data;
-          else this.items = [...this.items, ...data];
-          if (data.length === 0 || data.length < 10) this.hasMore = false;
+          if (this.page === 1) this.items = processedData;
+          else this.items = [...this.items, ...processedData];
+          if (processedData.length === 0 || processedData.length < 10) this.hasMore = false;
           else {this.page++;}
           if (event) event.target.complete();
         },
