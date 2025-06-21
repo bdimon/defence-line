@@ -14,3 +14,9 @@
       border-radius: 8px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.08);
   }
+  ion-badge {
+  /* Используем flex для выравнивания содержимого */
+  display: inline-flex;
+  align-items: center;
+  gap: 5px; /* Добавляем небольшой отступ между иконкой и текстом */
+}

@@ -1,15 +1,15 @@
- page-detail {
 ion-title {
     color: #fff!important;
 }
 
 .detail-container {
-
-     display: flex;
-  justify-content: center;
-  align-items: center;
-//   min-height: 150px; /* или подберите под ваш дизайн */
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
+  display: flex;
+  justify-content: start;
 }
+  
 .detail-image {
   display: block;
   max-width: 100%;
@@ -20,9 +20,15 @@ ion-title {
   object-fit: contain;
 }
 .detail-content {
-  padding: 0 20px;
   font-size: 20px;
   line-height: 1.2;
+  padding: 5%;
+
 }
 
- }
+ion-badge {
+  /* Используем flex для выравнивания содержимого */
+  display: inline-flex;
+  align-items: center;
+  gap: 5px; /* Добавляем небольшой отступ между иконкой и текстом */
+}
