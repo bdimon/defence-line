@@ -6,8 +6,8 @@
   </ion-header>
   <ion-content>
     <ion-list>
-      <ion-item button (click)="openCategory(0)">Все</ion-item>
-      <ion-item button *ngFor="let cat of categories" (click)="openCategory(cat.id)">
+      <ion-item button menuToggle (click)="openCategory(0)">Все</ion-item>
+      <ion-item button menuToggle *ngFor="let cat of categories" (click)="openCategory(cat.id)">
         {{ cat.name }}
       </ion-item>
     </ion-list>
