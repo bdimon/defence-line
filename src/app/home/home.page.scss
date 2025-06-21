@@ -20,3 +20,9 @@
   align-items: center;
   gap: 5px; /* Добавляем небольшой отступ между иконкой и текстом */
 }
+
+/* Используем ::ng-deep, чтобы стили применились к контенту из [innerHTML] */
+:host ::ng-deep .highlight {
+  background-color: yellow; /* Цвет фона для подсветки */
+  font-weight: bold; /* Делаем текст жирным */
+}

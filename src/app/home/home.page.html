@@ -53,7 +53,7 @@
         class="home-image"
       />
     </div>
-      <ion-card-title align="center" [innerHTML]="item.title.rendered"></ion-card-title>
+      <ion-card-title align="center" [innerHTML]="item.title.rendered | highlight: searchTerm"></ion-card-title>
       <ion-row>
         <ion-badge color="secondary">
           {{ getCatName(item.categories[0]) }}

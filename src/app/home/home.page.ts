@@ -5,6 +5,8 @@ import { WpService } from '../services/wp.service';
 import { NgFor, NgIf, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonIcon, IonContent, IonItem, IonLabel, IonSelect, IonSelectOption, IonRefresher, IonRefresherContent, IonCard, IonCardContent, IonCardTitle, IonRow, IonBadge, IonSpinner, IonInfiniteScroll, IonInfiniteScrollContent, IonSearchbar } from '@ionic/angular/standalone';
+import { HighlightPipe } from '../pipes/highlight.pipe'; // Импортируем наш новый пайп
+
 
 
 @Component({
@@ -22,7 +24,9 @@ import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonIcon, Io
     IonSelectOption,
     IonSearchbar,
     FormsModule,
-    DatePipe
+    DatePipe,
+    HighlightPipe // Добавляем HighlightPipe в массив imports
+    
   ],
 })
 export class HomeComponent implements OnInit {
