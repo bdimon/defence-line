@@ -14,11 +14,14 @@ import {
   IonList,
   IonAvatar,
   IonButtons,
-  IonBackButton
+  IonBackButton,
+  IonItem,
+  IonLabel
 } from '@ionic/angular/standalone';
 import { NgFor, NgIf, DatePipe } from '@angular/common';
 import { WpService } from '../services/wp.service';
 import { HighlightPipe } from '../pipes/highlight.pipe'; // Импортируем наш новый пайп
+import { SafeHtmlPipe } from '../pipes/safe-html.pipe'; // Импортируем новый пайп
 
 @Component({
   selector: 'app-detail',
@@ -40,10 +43,13 @@ import { HighlightPipe } from '../pipes/highlight.pipe'; // Импортируе
     IonAvatar,
     IonButtons,
     IonBackButton,
+    IonItem,
+    IonLabel,
     NgFor,
     NgIf,
     DatePipe,
-    HighlightPipe
+    HighlightPipe,
+    SafeHtmlPipe // Добавляем в imports
   ],
 
   providers: [DatePipe]

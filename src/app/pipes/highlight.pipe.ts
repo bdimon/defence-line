@@ -17,11 +17,7 @@ constructor(private sanitizer: DomSanitizer) {}
     }
 
     const regex = new RegExp(searchTerm, 'gi'); // 'gi' для глобального и регистронезависимого поиска
-    console.log('searchTerm',searchTerm)
-    // console.log('regex',regex)
-    console.log('value',value)
     const highlightedText = value.replace(regex, (match) => `<span class="highlight">${match}</span>`);
-    console.log('highlightedText',highlightedText)
 
     return this.sanitizer.bypassSecurityTrustHtml(highlightedText);
   }
