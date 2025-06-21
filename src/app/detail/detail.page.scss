@@ -1,0 +1,28 @@
+ page-detail {
+ion-title {
+    color: #fff!important;
+}
+
+.detail-container {
+
+     display: flex;
+  justify-content: center;
+  align-items: center;
+//   min-height: 150px; /* или подберите под ваш дизайн */
+}
+.detail-image {
+  display: block;
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  margin: 0 auto 20px auto;
+  border-radius: 8px;
+  object-fit: contain;
+}
+.detail-content {
+  padding: 0 20px;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+ }

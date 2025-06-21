@@ -1,0 +1,16 @@
+
+    .home-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 150px; /* или подберите под ваш дизайн */
+}
+    .home-image {
+      width: 260px;
+      height: 146px;
+      object-fit: cover;
+    //   display: block;
+      margin: 0 auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  }

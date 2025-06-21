@@ -1,0 +1,68 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Recent Posts</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openSearch()">
+        <ion-icon slot="icon-only" name="search"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-item>
+    <ion-label>Sort</ion-label>
+    <ion-select [(ngModel)]="sort" (ionChange)="changeSort()">
+      <ion-select-option value="0">New to old</ion-select-option>
+      <ion-select-option value="1">Old to new</ion-select-option>
+      <ion-select-option value="2">A to Z</ion-select-option>
+      <ion-select-option value="3">Z to A</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-refresher slot="fixed" (ionRefresh)="resetAndLoad($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-card *ngFor="let item of items" (click)="openDetail(item)">
+    
+    
+   
+    <ion-card-content>
+      <div *ngIf="item._embedded?.['wp:featuredmedia']?.[0]?.media_details?.sizes" class="home-container">
+      <img
+        [src]="
+          item._embedded['wp:featuredmedia'][0].media_details.sizes['content-list']?.source_url ||
+          item._embedded['wp:featuredmedia'][0].media_details.sizes.thumbnail?.source_url ||
+          item._embedded['wp:featuredmedia'][0].media_details.sizes.medium_large?.source_url ||
+          item._embedded['wp:featuredmedia'][0].media_details.sizes.large?.source_url ||
+          item._embedded['wp:featuredmedia'][0].media_details.sizes.full?.source_url ||
+          item._embedded['wp:featuredmedia'][0].media_details.sizes.medium?.source_url"
+        alt="Post image"
+        class="home-image"
+      />
+    </div>
+      <ion-card-title align="center" [innerHTML]="item.title.rendered"></ion-card-title>
+      <ion-row>
+        <ion-badge color="secondary">
+          {{ getCatName(item.categories[0]) }}
+        </ion-badge>
+        <ion-badge color="light">
+          <ion-icon name="time"></ion-icon>
+          {{ item.date | date: 'dd.MM.yyyy / HH:mm' }}
+        </ion-badge>
+      </ion-row>
+    </ion-card-content>
+  </ion-card>
+
+  <div *ngIf="isLoading && page == 1" style="text-align: center; padding: 1em;">
+    <ion-spinner></ion-spinner>
+  </div>
+
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="getPosts($event)" [disabled]="!hasMore">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more posts..."></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>
