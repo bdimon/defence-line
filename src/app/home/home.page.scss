@@ -26,3 +26,8 @@
   background-color: yellow; /* Цвет фона для подсветки */
   font-weight: bold; /* Делаем текст жирным */
 }
+
+ion-card[button] {
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}

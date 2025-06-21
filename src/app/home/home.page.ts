@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { WpService } from '../services/wp.service';
 // import { IonicModule } from '@ionic/angular';
 import { NgFor, NgIf, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonIcon, IonContent, IonItem, IonLabel, IonSelect, IonSelectOption, IonRefresher, IonRefresherContent, IonCard, IonCardContent, IonCardTitle, IonRow, IonBadge, IonSpinner, IonInfiniteScroll, IonInfiniteScrollContent, IonSearchbar } from '@ionic/angular/standalone';
 import { HighlightPipe } from '../pipes/highlight.pipe'; // Импортируем наш новый пайп
+import { WpPost } from '../types';
 
 
 
@@ -25,12 +26,13 @@ import { HighlightPipe } from '../pipes/highlight.pipe'; // Импортируе
     IonSearchbar,
     FormsModule,
     DatePipe,
-    HighlightPipe // Добавляем HighlightPipe в массив imports
+    HighlightPipe, // Добавляем HighlightPipe в массив imports
+    RouterLink,
     
   ],
 })
 export class HomeComponent implements OnInit {
-  items: any[] = [];
+  items: WpPost[] = [];
   page = 1;
   isLoading = false;
   category_id = 0;
@@ -41,7 +43,6 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private wp: WpService,
-    private router: Router,
     private route: ActivatedRoute
   ) {}
 
@@ -77,7 +78,7 @@ export class HomeComponent implements OnInit {
     
     this.wp.getPosts(this.page, this.category_id, this.searchTerm, orderby, order)
       .subscribe(
-        (data: any[]) => {
+        (data: WpPost[]) => {
           // Обрабатываем данные, добавляя имя категории
           const processedData = data.map(post => {
             const categoryId = post.categories && post.categories.length > 0 ? post.categories[0] : 0;
@@ -103,9 +104,9 @@ export class HomeComponent implements OnInit {
     this.resetAndLoad();
   }
 
-  openDetail(item: any) {
-    this.router.navigate(['/detail', item.id], { queryParams: { searchTerm: this.searchTerm } });
-  }
+  // openDetail(item: WpPost) {
+  //   this.router.navigate(['/detail', item.id], { queryParams: { searchTerm: this.searchTerm } });
+  // }
 
  handleSearch(event: any) {
   this.searchTerm = event.target.value.toLowerCase();

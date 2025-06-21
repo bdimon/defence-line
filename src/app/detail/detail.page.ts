@@ -22,6 +22,9 @@ import { NgFor, NgIf, DatePipe } from '@angular/common';
 import { WpService } from '../services/wp.service';
 import { HighlightPipe } from '../pipes/highlight.pipe'; // Импортируем наш новый пайп
 import { SafeHtmlPipe } from '../pipes/safe-html.pipe'; // Импортируем новый пайп
+import { WpPost, WpComment } from '../types';
+
+
 
 @Component({
   selector: 'app-detail',
@@ -55,8 +58,8 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe'; // Импортируе�
   providers: [DatePipe]
 })
 export class DetailPage implements OnInit {
-  post: any = {};
-  comments: any[] = [];
+  post: WpPost | null = null;
+  comments: WpComment[] = [];
   isLoading = false;
   page = 1;
   id: number | null = null;
@@ -90,13 +93,13 @@ export class DetailPage implements OnInit {
   }
 
   getComments(event?: any) {
-    if (this.isLoading || !this.showMore) {
+    if (this.isLoading || !this.showMore || !this.post) {
       if (event) event.target.complete();
       return;
     }
     this.isLoading = true;
     this.api.getComments(this.post.id, this.page).subscribe({
-      next: (resp: any[]) => {
+      next: (resp: WpComment[]) => {
         this.isLoading = false;
 
         if (this.page === 1) {

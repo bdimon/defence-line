@@ -4,11 +4,6 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Recent Posts</ion-title>
-    <!--ion-buttons slot="end">
-      <ion-button (click)="openSearch()">
-        <ion-icon slot="icon-only" name="search"></ion-icon>
-      </ion-button>
-    </ion-buttons-->
   </ion-toolbar>
   <ion-toolbar>
     <ion-searchbar
@@ -35,8 +30,8 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-card *ngFor="let item of items" (click)="openDetail(item)">
-    
+  <!-- <ion-card *ngFor="let item of items" (click)="openDetail(item)"> -->
+  <ion-card *ngFor="let item of items" [routerLink]="['/detail', item.id]" [queryParams]="{ searchTerm: this.searchTerm }" button="true">  
     
    
     <ion-card-content>

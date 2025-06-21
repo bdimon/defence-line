@@ -4,6 +4,7 @@ import { WpService } from './services/wp.service';
 import { IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonRouterOutlet, MenuController } from '@ionic/angular/standalone'; // Добавляем MenuController
 import { NgFor } from '@angular/common';
 import { filter } from 'rxjs/operators'; // Добавляем filter
+import { WpCategory } from './types';
 
 @Component({
   selector: 'app-root',
@@ -24,7 +25,7 @@ import { filter } from 'rxjs/operators'; // Добавляем filter
   ]
 })
 export class AppComponent implements OnInit {
-  categories: any[] = [];
+  categories: WpCategory[] = [];
   selectedCategoryId: number = 0; // Инициализируем с 'Все' (ID 0)
 
   constructor(public api: WpService, private router: Router, private menuCtrl: MenuController) {} // Инжектируем MenuController
