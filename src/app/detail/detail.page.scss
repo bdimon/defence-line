@@ -7,7 +7,12 @@ ion-title {
     padding: 10px;
   }
   display: flex;
-  justify-content: start;
+  justify-content: center;
+}
+
+h1 {
+  text-align: center; /* Выравниваем заголовок по центру */
+  font-size: 2.5rem;
 }
   
 .detail-image {
@@ -20,7 +25,7 @@ ion-title {
   object-fit: contain;
 }
 .detail-content {
-  font-size: 20px;
+  font-size: 1.2rem;
   line-height: 1.2;
   padding: 5%;
 
@@ -31,4 +36,15 @@ ion-badge {
   display: inline-flex;
   align-items: center;
   gap: 5px; /* Добавляем небольшой отступ между иконкой и текстом */
+}
+
+.detail-comment {
+  font-size: 0.9rem;
+  padding: 0%, 5%;
+  margin: 0%
+}
+
+.detail-comment-p {
+  color: --var-color-primary;
+  padding-left: 1.0rem;
 }

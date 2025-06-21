@@ -14,7 +14,7 @@ import {
   IonList,
   IonAvatar,
   IonButtons,
-  IonMenuButton
+  IonBackButton,
 } from '@ionic/angular/standalone';
 import { NgFor, NgIf, DatePipe } from '@angular/common';
 import { WpService } from '../services/wp.service';
@@ -38,11 +38,10 @@ import { WpService } from '../services/wp.service';
     IonList,
     IonAvatar,
     IonButtons,
-    IonMenuButton,
+    IonBackButton,
     NgFor,
     NgIf,
     DatePipe,
-    // JsonPipe
   ],
   providers: [DatePipe]
 })

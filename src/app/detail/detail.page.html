@@ -1,15 +1,15 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
     <ion-title text-center padding [innerHTML]="post?.title?.rendered"></ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-  <div *ngIf="post" padding-left="20px" padding-right="20px">
-  <h1 text-center [innerHTML]= "post?.title?.rendered"></h1>
+  <div *ngIf="post">
+  <h1 [innerHTML]= "post?.title?.rendered"></h1>
   <div *ngIf="post._embedded && post._embedded['wp:featuredmedia'] && post._embedded['wp:featuredmedia'][0]?.media_details?.sizes" class="detail-container">
     <img
       [src]="
@@ -46,20 +46,20 @@
   </div>
   </div>  
 
-  <div *ngIf="this.comments">
+  <div *ngIf="comments">
     <ion-item-divider>Comments</ion-item-divider>
-    <ion-list text-wrap *ngFor="let comment of comments">
+    <ion-list text-wrap *ngFor="let comment of comments" class="detail-content">
       <ion-avatar>
         <img *ngIf="comment.author_avatar_urls" [src]="comment.author_avatar_urls[24]" />
       </ion-avatar>
       <h4>{{ comment.author_name }}</h4>
       <h5 light>{{ comment.date | date: 'dd.MM.yyyy / HH:mm' }}</h5>
-      <p class="detail-content" [innerHtml]="comment.content?.rendered"></p>
+      <div class="detail-comment">
+      <p  class="detail-comment-p" [innerHtml]="comment.content?.rendered"></p>
+      </div>
     </ion-list>
   </div>
-  <div *ngIf="isLoading && page == 1" text-center padding>
-    <ion-infinite-scroll (ionInfinite)="getComments($event)">
-      <ion-infinite-scroll-content></ion-infinite-scroll-content>
-    </ion-infinite-scroll>
-  </div>
+  <ion-infinite-scroll *ngIf="isLoading && page == 1" (ionInfinite)="getComments($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>
