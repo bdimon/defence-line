@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router'; // Добавляем NavigationEnd
 import { WpService } from './services/wp.service';
 import { IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonRouterOutlet, MenuController } from '@ionic/angular/standalone'; // Добавляем MenuController
 import { NgFor } from '@angular/common';
+import { filter } from 'rxjs/operators'; // Добавляем filter
 
 @Component({
   selector: 'app-root',
@@ -24,13 +25,33 @@ import { NgFor } from '@angular/common';
 })
 export class AppComponent implements OnInit {
   categories: any[] = [];
+  selectedCategoryId: number = 0; // Инициализируем с 'Все' (ID 0)
 
   constructor(public api: WpService, private router: Router, private menuCtrl: MenuController) {} // Инжектируем MenuController
 
   ngOnInit() {
     this.api.loadCategories().subscribe(cats => {
       this.categories = cats;
+      // Устанавливаем начальную выбранную категорию на основе текущего URL
+      this.updateSelectedCategoryFromRoute();
     });
+
+    // Слушаем события роутера, чтобы обновлять выбранную категорию при навигации
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.updateSelectedCategoryFromRoute();
+    });
+  }
+
+  // Метод для обновления selectedCategoryId из параметров URL
+  private updateSelectedCategoryFromRoute() {
+    const currentRoute = this.router.routerState.snapshot.root;
+    let catId = 0; // По умолчанию 'Все'
+    if (currentRoute.queryParams['cat_id']) {
+      catId = Number(currentRoute.queryParams['cat_id']);
+    }
+    this.selectedCategoryId = catId;
   }
 
   openCategory(cat_id: number) {

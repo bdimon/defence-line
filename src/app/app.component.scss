@@ -117,3 +117,31 @@ ion-note {
 ion-item.selected {
   --color: var(--ion-color-primary);
 }
+
+ion-menu ion-item {
+  --background-hover: var(--ion-color-light);
+}
+
+/* Стиль для активной (выбранной) категории */
+ion-menu ion-item.active-category {
+  --background: var(--ion-color-primary-tint); /* Более светлый оттенок основного цвета */
+  color: var(--ion-color-primary-contrast); /* Цвет текста, контрастный к фону */
+  font-weight: bold; /* Жирный шрифт */
+  border-left: 4px solid var(--ion-color-primary); /* Яркая полоска слева */
+}
+
+/* Общие стили для списка категорий */
+ion-list {
+  padding-top: 0; /* Убираем лишний отступ сверху */
+  padding-bottom: 0; /* Убираем лишний отступ снизу */
+}
+
+ion-item {
+  --padding-start: 16px; /* Стандартный отступ Ionic */
+  --inner-padding-end: 16px;
+  border-bottom: 1px solid var(--ion-color-step-150, #e0e0e0); /* Легкий разделитель между пунктами */
+}
+
+ion-item:last-child {
+  border-bottom: none; /* Убираем разделитель у последнего элемента */
+}
