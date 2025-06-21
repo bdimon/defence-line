@@ -55,7 +55,7 @@
       <h4>{{ comment.author_name }}</h4>
       <h5 light>{{ comment.date | date: 'dd.MM.yyyy / HH:mm' }}</h5>
       <div class="detail-comment">
-      <p  class="detail-comment-p" [innerHtml]="comment.content.rendered"></p>
+      <p  class="detail-comment-p" [innerHtml]="comment.content.rendered | safeHtml"></p>
       </div>
     </ion-list>
   </div>

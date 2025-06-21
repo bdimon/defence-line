@@ -46,8 +46,6 @@ import { WpPost, WpComment } from '../types';
     IonAvatar,
     IonButtons,
     IonBackButton,
-    IonItem,
-    IonLabel,
     NgFor,
     NgIf,
     DatePipe,
