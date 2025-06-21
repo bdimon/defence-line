@@ -42,26 +42,24 @@
         {{ post?._embedded?.author?.[0]?.name }}
       </ion-badge>
     </ion-row>
-    <div padding [innerHTML]="post?.content?.rendered | highlight: searchTerm"></div>
+    <div  padding [innerHTML]="post?.content?.rendered | highlight: searchTerm"></div>
   </div>
   </div>  
 
   <div *ngIf="comments">
     <ion-item-divider>Comments</ion-item-divider>
-    <ion-list class="detail-content" [inset]="true">
-      <ion-item *ngFor="let comment of comments" lines="none">
-        <ion-avatar slot="start">
-          <img *ngIf="comment.author_avatar_urls" [src]="comment.author_avatar_urls['48'] || comment.author_avatar_urls['24']" />
-        </ion-avatar>
-        <ion-label>
-          <h4>{{ comment.author_name }}</h4>
-          <h5>{{ comment.date | date: 'dd.MM.yyyy / HH:mm' }}</h5>
-          <div class="detail-comment" [innerHTML]="comment.content?.rendered | safeHtml"></div>
-        </ion-label>
-      </ion-item>
+    <ion-list text-wrap *ngFor="let comment of comments" class="detail-content">
+      <ion-avatar>
+        <img *ngIf="comment.author_avatar_urls" [src]="comment.author_avatar_urls[24]" />
+      </ion-avatar>
+      <h4>{{ comment.author_name }}</h4>
+      <h5 light>{{ comment.date | date: 'dd.MM.yyyy / HH:mm' }}</h5>
+      <div class="detail-comment">
+      <p  class="detail-comment-p" [innerHtml]="comment.content?.rendered"></p>
+      </div>
     </ion-list>
   </div>
-  <ion-infinite-scroll *ngIf="isLoading && page == 1" (ionInfinite)="getComments($event)">
+  <ion-infinite-scroll [disabled]="!showMore" (ionInfinite)="getComments($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 </ion-content>
