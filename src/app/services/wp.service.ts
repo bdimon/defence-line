@@ -49,12 +49,15 @@ export class WpService {
     orderby?: string,
     order: string = 'desc'
   ): Observable<any> {
-    let params = new HttpParams().set('page', page.toString());
+    let params = new HttpParams()
+    .set('page', page.toString())
+    .set('per_page', '10')
+    .set('_embed', true)
     if (category) params = params.set('categories', category.toString());
     if (search) params = params.set('search', search);
     if (orderby) params = params.set('orderby', orderby);
     if (order) params = params.set('order', order);
-    params = params.set('_embed', '');
+    // params = params.set('_embed', '');
     return this.http.get(`${this.API_URL}/posts?_embed`, { params });
   }
 

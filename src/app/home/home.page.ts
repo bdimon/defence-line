@@ -4,7 +4,7 @@ import { WpService } from '../services/wp.service';
 // import { IonicModule } from '@ionic/angular';
 import { NgFor, NgIf, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonButton, IonIcon, IonContent, IonItem, IonLabel, IonSelect, IonSelectOption, IonRefresher, IonRefresherContent, IonCard, IonCardContent, IonCardTitle, IonRow, IonBadge, IonSpinner, IonInfiniteScroll, IonInfiniteScrollContent } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonIcon, IonContent, IonItem, IonLabel, IonSelect, IonSelectOption, IonRefresher, IonRefresherContent, IonCard, IonCardContent, IonCardTitle, IonRow, IonBadge, IonSpinner, IonInfiniteScroll, IonInfiniteScrollContent, IonSearchbar } from '@ionic/angular/standalone';
 
 
 @Component({
@@ -13,13 +13,14 @@ import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonButton, 
   styleUrls: ['./home.page.scss'],
   standalone: true,
   imports: [
-    IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonButton, IonIcon,
+    IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonIcon,
     IonContent, IonItem, IonLabel, IonSelect, IonSelectOption, IonRefresher, IonRefresherContent,
     IonCard, IonCardContent, IonCardTitle, IonRow, IonBadge, IonSpinner,
     IonInfiniteScroll, IonInfiniteScrollContent,
     NgFor, NgIf,
     IonSelect,
     IonSelectOption,
+    IonSearchbar,
     FormsModule,
     DatePipe
   ],
@@ -31,6 +32,8 @@ export class HomeComponent implements OnInit {
   category_id = 0;
   sort = '0';
   hasMore = true;
+  searchTerm: string = '';
+
 
   constructor(
     private wp: WpService,
@@ -68,7 +71,7 @@ export class HomeComponent implements OnInit {
     if(this.sort === '2') { orderby = 'title'; order = 'asc'; }
     if(this.sort === '3') { orderby = 'title'; order = 'desc'; }
     
-    this.wp.getPosts(this.page, this.category_id, undefined, orderby, order)
+    this.wp.getPosts(this.page, this.category_id, this.searchTerm, orderby, order)
       .subscribe(
         (data: any[]) => {
           this.isLoading = false;
@@ -94,9 +97,15 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/detail', item.id]);
   }
 
-  openSearch() {
-    this.router.navigate(['/search']);
-  }
+ handleSearch(event: any) {
+  this.searchTerm = event.target.value.toLowerCase();
+  // Сбрасываем список постов и пагинацию для нового поиска
+  this.items = [];
+  this.page = 1;
+  this.hasMore = true;
+  this.getPosts(); // Загружаем посты с учетом поискового запроса
+}
+
 
   getCatName(catId: number): string {
     // console.log('Home', catId)

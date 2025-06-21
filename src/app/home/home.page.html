@@ -4,11 +4,19 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Recent Posts</ion-title>
-    <ion-buttons slot="end">
+    <!--ion-buttons slot="end">
       <ion-button (click)="openSearch()">
         <ion-icon slot="icon-only" name="search"></ion-icon>
       </ion-button>
-    </ion-buttons>
+    </ion-buttons-->
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      animated="true"
+      placeholder="Поиск по постам"
+      (ionInput)="handleSearch($event)"
+      [debounce]="500">
+    </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
