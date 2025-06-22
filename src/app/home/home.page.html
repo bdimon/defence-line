@@ -3,12 +3,12 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Recent Posts</ion-title>
+    <ion-title>Останні повідомлення</ion-title>
   </ion-toolbar>
   <ion-toolbar>
     <ion-searchbar
       animated="true"
-      placeholder="Поиск по постам"
+      placeholder="Пошук по сайту"
       (ionInput)="handleSearch($event)"
       [debounce]="500">
     </ion-searchbar>
@@ -17,12 +17,12 @@
 
 <ion-content [fullscreen]="true">
   <ion-item>
-    <ion-label>Sort</ion-label>
+    <ion-label>Сортування</ion-label>
     <ion-select [(ngModel)]="sort" (ionChange)="changeSort()">
-      <ion-select-option value="0">New to old</ion-select-option>
-      <ion-select-option value="1">Old to new</ion-select-option>
-      <ion-select-option value="2">A to Z</ion-select-option>
-      <ion-select-option value="3">Z to A</ion-select-option>
+      <ion-select-option value="0">Від нових</ion-select-option>
+      <ion-select-option value="1">Від старих</ion-select-option>
+      <ion-select-option value="2">Від А до Я</ion-select-option>
+      <ion-select-option value="3">Від Я до А</ion-select-option>
     </ion-select>
   </ion-item>
 

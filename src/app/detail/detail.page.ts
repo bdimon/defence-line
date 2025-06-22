@@ -1,28 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonRow,
-  IonBadge,
-  IonIcon,
-  IonInfiniteScroll,
-  IonInfiniteScrollContent,
-  IonItemDivider,
-  IonList,
-  IonAvatar,
-  IonButtons,
-  IonBackButton,
-  IonItem,
-  IonLabel
-} from '@ionic/angular/standalone';
+import { IonicElementsModule } from '../modules/ionic-elements.module'; // Import the consolidated module
 import { NgFor, NgIf, DatePipe } from '@angular/common';
 import { WpService } from '../services/wp.service';
 import { HighlightPipe } from '../pipes/highlight.pipe'; // Импортируем наш новый пайп
 import { SafeHtmlPipe } from '../pipes/safe-html.pipe'; // Импортируем новый пайп
 import { WpPost, WpComment } from '../types';
+import { CategoryColorPipe } from '../pipes/category-color.pipe';
 
 
 
@@ -32,25 +16,13 @@ import { WpPost, WpComment } from '../types';
   styleUrls: ['./detail.page.scss'],
   standalone: true,
   imports: [
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
-    IonRow,
-    IonBadge,
-    IonIcon,
-    IonInfiniteScroll,
-    IonInfiniteScrollContent,
-    IonItemDivider,
-    IonList,
-    IonAvatar,
-    IonButtons,
-    IonBackButton,
+    IonicElementsModule,
     NgFor,
     NgIf,
     DatePipe,
     HighlightPipe,
-    SafeHtmlPipe // Добавляем в imports
+    SafeHtmlPipe, // Добавляем в imports
+    CategoryColorPipe
   ],
 
   providers: [DatePipe]

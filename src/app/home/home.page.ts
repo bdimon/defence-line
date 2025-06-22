@@ -4,7 +4,7 @@ import { WpService } from '../services/wp.service';
 // import { IonicModule } from '@ionic/angular';
 import { NgFor, NgIf, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonIcon, IonContent, IonItem, IonLabel, IonSelect, IonSelectOption, IonRefresher, IonRefresherContent, IonCard, IonCardContent, IonCardTitle, IonRow, IonBadge, IonSpinner, IonInfiniteScroll, IonInfiniteScrollContent, IonSearchbar } from '@ionic/angular/standalone';
+import { IonicElementsModule } from '../modules/ionic-elements.module'; // Import the consolidated module
 import { HighlightPipe } from '../pipes/highlight.pipe'; // Импортируем наш новый пайп
 import { WpPost } from '../types';
 import { CategoryColorPipe } from '../pipes/category-color.pipe';
@@ -15,32 +15,9 @@ import { CategoryColorPipe } from '../pipes/category-color.pipe';
   styleUrls: ['./home.page.scss'],
   standalone: true,
   imports: [
-    IonHeader,
-    IonToolbar,
-    IonButtons,
-    IonMenuButton,
-    IonTitle,
-    IonIcon,
-    IonContent,
-    IonItem,
-    IonLabel,
-    IonSelect,
-    IonSelectOption,
-    IonRefresher,
-    IonRefresherContent,
-    IonCard,
-    IonCardContent,
-    IonCardTitle,
-    IonRow,
-    IonBadge,
-    IonSpinner,
-    IonInfiniteScroll,
-    IonInfiniteScrollContent,
+    IonicElementsModule,
     NgFor,
     NgIf,
-    IonSelect,
-    IonSelectOption,
-    IonSearchbar,
     FormsModule,
     DatePipe,
     HighlightPipe, // Добавляем HighlightPipe в массив imports
