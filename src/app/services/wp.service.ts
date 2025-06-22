@@ -14,15 +14,15 @@ export class WpService {
   // Загрузка всех категорий (можно вызвать при инициализации)
   loadCategories(): Observable<WpCategory[]> {
     if (this.categories.length) {
+      // Return cached categories if already loaded
       return of(this.categories);
     }
     return this.http.get<WpCategory[]>(`${this.API_URL}/categories`).pipe(
       map((cats: WpCategory[]) => {
         // Если с сервера пришёл не пустой массив — кэшируем
         if (Array.isArray(cats) && cats.length > 0) {
-          this.categories = cats;
+          this.categories = cats; // Cache the categories
         } else {
-          // Если массив пустой — НЕ кэшируем, чтобы не использовать его потом
           console.warn('Категории не загружены или пусты');
         }
         return cats;
@@ -51,14 +51,23 @@ export class WpService {
     order: string = 'desc'
   ): Observable<WpPost[]> {
     let params = new HttpParams()
-    .set('page', page.toString())
-    .set('per_page', '10')
-    .set('_embed', true)
-    if (category) params = params.set('categories', category.toString());
-    if (search) params = params.set('search', search);
-    if (orderby) params = params.set('orderby', orderby);
-    if (order) params = params.set('order', order);
-    // params = params.set('_embed', '');
+      .set('page', page.toString())
+      .set('per_page', '10')
+      .set('_embed', true);
+
+    if (category && category > 0) {
+      params = params.set('categories', category.toString()); // Ensure category filtering is applied
+    }
+    if (search) {
+      params = params.set('search', search.replace(/[<>]/g, '')); // Sanitize search input
+    }
+    if (orderby) {
+      params = params.set('orderby', orderby);
+    }
+    if (order) {
+      params = params.set('order', order);
+    }
+
     return this.http.get<WpPost[]>(`${this.API_URL}/posts?_embed`, { params });
   }
 
@@ -68,10 +77,10 @@ export class WpService {
   }
 
   getComments(postId: number, page: number = 1): Observable<WpComment[]> {
-  const params = new HttpParams()
-    .set('_embed', '')
-    .set('page', page.toString())
-    .set('post', postId.toString());
-  return this.http.get<WpComment[]>(`${this.API_URL}/comments`, { params });
-}
+    const params = new HttpParams()
+      .set('_embed', '')
+      .set('page', page.toString())
+      .set('post', postId.toString());
+    return this.http.get<WpComment[]>(`${this.API_URL}/comments`, { params });
+  }
 }

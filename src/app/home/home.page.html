@@ -50,7 +50,7 @@
     </div>
       <ion-card-title align="center" [innerHTML]="item.title.rendered | highlight: searchTerm"></ion-card-title>
       <ion-row>
-        <ion-badge color="secondary">
+        <ion-badge [color]="item.categories[0] | categoryColor">
           {{ item.categoryName }}
         </ion-badge>
         <ion-badge color="light">

@@ -30,11 +30,9 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.api.loadCategories().subscribe((cats) => {
       this.categories = cats;
-      // Устанавливаем начальную выбранную категорию на основе текущего URL
       this.updateSelectedCategoryFromRoute();
     });
 
-    // Слушаем события роутера, чтобы обновлять выбранную категорию при навигации
     this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
       this.updateSelectedCategoryFromRoute();
     });

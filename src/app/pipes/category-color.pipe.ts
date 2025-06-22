@@ -9,13 +9,13 @@ export class CategoryColorPipe implements PipeTransform {
     1: 'primary',
     2: 'danger',
     8: 'tertiary',
-    19: 'tertiary',
-    27: 'success',
+    // 19: 'tertiary',
+    // 27: 'success',
     26: 'success',
     9: 'warning',
     6: 'dark',
     21: 'secondary',
-    25: 'warning'
+    25: 'light'
 
     // Add more mappings as needed
   };
