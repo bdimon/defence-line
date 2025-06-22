@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router'; // Добавляем NavigationEnd
 import { WpService } from './services/wp.service';
-import { IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonRouterOutlet, MenuController } from '@ionic/angular/standalone'; // Добавляем MenuController
+import { IonicElementsModule } from '../app/modules/ionic-elements.module'; // Import the consolidated module
+import {IonRouterOutlet, 
+  MenuController } from '@ionic/angular/standalone'
 import { NgFor } from '@angular/common';
 import { filter } from 'rxjs/operators'; // Добавляем filter
 import { WpCategory } from './types';
@@ -12,17 +14,10 @@ import { WpCategory } from './types';
   standalone: true,
   styleUrls: ['./app.component.scss'],
   imports: [
-    IonMenu,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
-    IonList,
-    IonItem,
-    IonRouterOutlet,
-    // IonMenuToggle, // Убедимся, что IonMenuToggle здесь не импортируется, чтобы избежать предыдущей ошибки
+    IonicElementsModule, // Use the consolidated module
     NgFor,
-  ]
+    IonRouterOutlet,
+  ],
 })
 export class AppComponent implements OnInit {
   categories: WpCategory[] = [];
@@ -31,16 +26,14 @@ export class AppComponent implements OnInit {
   constructor(public api: WpService, private router: Router, private menuCtrl: MenuController) {} // Инжектируем MenuController
 
   ngOnInit() {
-    this.api.loadCategories().subscribe(cats => {
+    this.api.loadCategories().subscribe((cats) => {
       this.categories = cats;
       // Устанавливаем начальную выбранную категорию на основе текущего URL
       this.updateSelectedCategoryFromRoute();
     });
 
     // Слушаем события роутера, чтобы обновлять выбранную категорию при навигации
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe(() => {
+    this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
       this.updateSelectedCategoryFromRoute();
     });
   }
