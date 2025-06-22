@@ -34,7 +34,7 @@ export class WpService {
   getCatName(id: number): string {
     if (!this.categories.length) return ''; // Нет категорий — возвращаем пусто
     const cat = this.categories.find((c) => c.id === id);
-    // console.log('WpService', cat?.name);
+    // console.log('WpService', cat?.id, '=>', cat?.name);
     return cat ? cat.name : '';
   }
 

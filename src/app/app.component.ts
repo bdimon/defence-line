@@ -7,6 +7,7 @@ import {IonRouterOutlet,
 import { NgFor } from '@angular/common';
 import { filter } from 'rxjs/operators'; // Добавляем filter
 import { WpCategory } from './types';
+import { CategoryColorPipe } from './pipes/category-color.pipe'; // Import the pipe
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,7 @@ import { WpCategory } from './types';
     IonicElementsModule, // Use the consolidated module
     NgFor,
     IonRouterOutlet,
+    CategoryColorPipe
   ],
 })
 export class AppComponent implements OnInit {
