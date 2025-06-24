@@ -28,9 +28,9 @@
   <div padding class="detail-content">
     <ion-row>
       <ion-badge
-  [color]="post.categories[0] | categoryColor"
-  *ngIf="post.categories.length > 0 && api.getCatName(post.categories[0])"
->
+        [color]="post.categories[0] | categoryColor"
+        *ngIf="((post.categories.length > 0) && (api.getCatName(post.categories[0])))"
+      >
         {{ api.getCatName(post.categories[0]) }}
       </ion-badge>
       <ion-badge color="light">

@@ -53,7 +53,8 @@ export class WpService {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('per_page', '10')
-      .set('_embed', true);
+      .set('_embed', true)
+      .set('fields', 'id,title,content,date,categories,_embedded'); // Limit fields to necessary data
 
     if (category && category > 0) {
       params = params.set('categories', category.toString()); // Ensure category filtering is applied
@@ -80,7 +81,8 @@ export class WpService {
     const params = new HttpParams()
       .set('_embed', '')
       .set('page', page.toString())
-      .set('post', postId.toString());
+      .set('post', postId.toString())
+      .set('fields', 'id,author_name,date,content,author_avatar_urls'); // Limit fields to necessary data
     return this.http.get<WpComment[]>(`${this.API_URL}/comments`, { params });
   }
 }
