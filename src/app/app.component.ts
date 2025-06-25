@@ -53,4 +53,35 @@ export class AppComponent implements OnInit {
     // Программно закрываем меню после навигации
     this.menuCtrl.close();
   }
+
+  switchSite() {
+    const availableSites = this.api.getAvailableSites();
+    const currentIndex = this.api['activeSiteIndex']; // Get the current active site index
+    const nextIndex = (currentIndex + 1) % availableSites.length;
+    this.api.setActiveSite(nextIndex); // Update the active site in WpService
+    this.router.navigate(['/'], { queryParams: { cat_id: 0 }, replaceUrl: true });
+
+    console.log(`App Switched to site: ${availableSites[nextIndex]}`);
+
+    // Reload categories explicitly
+    this.api.loadCategories().subscribe({
+      next: (cats) => {
+        this.categories = cats;
+        console.log('App Categories reloaded from:', availableSites[nextIndex]);
+        this.router.navigate(['/home'], { queryParams: { cat_id: 0 }, replaceUrl: true });
+
+      },
+      error: (error) => {
+        console.error('App Error reloading categories:', error);
+        // this.router.navigate(['/home'], { queryParams: { cat_id: 0 }, replaceUrl: true });
+
+      }
+    });
+
+    // Reload the current route to reflect the change
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate([this.router.url]);
+    });
+    this.menuCtrl.close();
+  }
 }

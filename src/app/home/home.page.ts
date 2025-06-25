@@ -93,6 +93,7 @@ export class HomeComponent implements OnInit {
         else {
           this.page++;
         }
+        console.log('Home Page N:', this.page)
         if (event) event.target.complete();
       },
       () => {

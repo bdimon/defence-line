@@ -6,10 +6,11 @@
   </ion-header>
   <ion-content>
     <ion-list>
+      <ion-item button menuToggle (click)="switchSite()">Switch Site</ion-item>
       <ion-item button menuToggle (click)="openCategory(0)" [class.active-category]="selectedCategoryId === 0">Все</ion-item>
       <ion-item button menuToggle *ngFor="let cat of categories" (click)="openCategory(cat.id)" [class.active-category]="selectedCategoryId === cat.id">
         {{ cat.name }}
-      </ion-item>
+      </ion-item>      
     </ion-list>
     <ion-badge [color]="category.id | categoryColor" *ngFor="let category of categories">
       {{ category.name }}
