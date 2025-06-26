@@ -33,6 +33,7 @@ export class HomeComponent implements OnInit {
   sort = '0';
   hasMore = true;
   searchTerm: string = '';
+  pageTitle = 'Останні повідомлення';
 
   constructor(private wp: WpService, private route: ActivatedRoute) {}
 
@@ -40,6 +41,7 @@ export class HomeComponent implements OnInit {
     // Remove redundant category loading
     this.route.queryParams.subscribe((params) => {
       this.category_id = params['cat_id'] ? +params['cat_id'] : 0;
+      this.updateTitle();
       this.resetAndLoad();
     });
   }
@@ -49,6 +51,11 @@ export class HomeComponent implements OnInit {
     this.page = 1;
     this.hasMore = true;
     this.getPosts(event);
+  }
+
+  updateTitle() {
+    const siteNames = ['Defence Line', 'Ponomar Oleg', 'Tverezo Info'];
+    this.pageTitle = siteNames[this.wp.activeSiteIndex] || 'Останні повідомлення';
   }
 
   getPosts(event?: any) {
@@ -93,7 +100,7 @@ export class HomeComponent implements OnInit {
         else {
           this.page++;
         }
-        console.log('Home Page N:', this.page)
+        console.log('Home Page N:', this.page);
         if (event) event.target.complete();
       },
       () => {

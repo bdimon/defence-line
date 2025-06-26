@@ -10,6 +10,7 @@ export class WpService {
   private sites = [
     'https://defence-line.org/wp-json/wp/v2',
     'https://ponomaroleg.com/wp-json/wp/v2',
+    'https://tverezo.info/wp-json/wp/v2'
   ]; // Add multiple site URLs
   public activeSiteIndex = 0; // Default to the first site
 
