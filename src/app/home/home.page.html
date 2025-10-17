@@ -3,15 +3,16 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>{{pageTitle}}</ion-title>
+    <ion-title>{{ pageTitle }}</ion-title>
   </ion-toolbar>
+
   <ion-toolbar>
     <ion-searchbar
       animated="true"
       placeholder="Пошук по сайту"
       (ionInput)="handleSearch($event)"
-      [debounce]="500">
-    </ion-searchbar>
+      [debounce]="500"
+    ></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
@@ -30,28 +31,27 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <!-- <ion-card *ngFor="let item of items" (click)="openDetail(item)"> -->
-  <ion-card *ngFor="let item of items" [routerLink]="['/detail', item.id]" [queryParams]="{ searchTerm: this.searchTerm }" button="true">  
-    
-   
+  <ion-card
+    *ngFor="let item of items; trackBy: trackById"
+    [routerLink]="['/detail', item.id]"
+    [state]="{ post: item, siteIndex: wp.activeSiteIndex }"
+    button="true"
+  >
     <ion-card-content>
-      <div *ngIf="item._embedded?.['wp:featuredmedia']?.[0]?.media_details?.sizes" class="home-container">
-      <img
-        [src]="
-          item._embedded['wp:featuredmedia'][0].media_details.sizes['content-list']?.source_url ||
-          item._embedded['wp:featuredmedia'][0].media_details.sizes.thumbnail?.source_url ||
-          item._embedded['wp:featuredmedia'][0].media_details.sizes.medium_large?.source_url ||
-          item._embedded['wp:featuredmedia'][0].media_details.sizes.large?.source_url ||
-          item._embedded['wp:featuredmedia'][0].media_details.sizes.full?.source_url ||
-          item._embedded['wp:featuredmedia'][0].media_details.sizes.medium?.source_url"
-        alt="Post image"
-        class="home-image"
-      />
-    </div>
+      <div class="home-container" >
+        <img
+          [src]="item._thumb"
+          alt="Post image"
+          class="home-image"
+          (error)="onImgError($event)"
+        />
+      </div>
+
       <ion-card-title align="center" [innerHTML]="item.title.rendered | highlight: searchTerm"></ion-card-title>
+
       <ion-row>
-        <ion-badge [color]="item.categories[0] | categoryColor">
-          {{ item.categoryName }}
+        <ion-badge [color]="getPrimaryCategoryId(item) | categoryColor">
+          {{ item.categoryName || (item.categories?.[0] ? getCatName(item.categories[0]) : '') }}
         </ion-badge>
         <ion-badge color="light">
           <ion-icon name="time"></ion-icon>
@@ -61,7 +61,7 @@
     </ion-card-content>
   </ion-card>
 
-  <div *ngIf="isLoading && page == 1" style="text-align: center; padding: 1em;">
+  <div *ngIf="isLoading && page === 1" style="text-align: center; padding: 1em;">
     <ion-spinner></ion-spinner>
   </div>
 
