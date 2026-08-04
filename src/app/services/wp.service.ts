@@ -4,45 +4,65 @@ import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { WpCategory, WpComment, WpPost } from '../types';
 
+export interface SiteInfo {
+  name: string;
+  url: string;
+}
+
 @Injectable({ providedIn: 'root' })
+
 export class WpService {
   public categories: WpCategory[] = [];
-  private sites = [
-    'https://defence-line.org/wp-json/wp/v2',
-    'https://ponomaroleg.com/wp-json/wp/v2',
-    'https://tverezo.info/wp-json/wp/v2'
+
+  public sites: SiteInfo[] = [
+    { name: 'Defense Line', url: 'https://defence-line.org/wp-json/wp/v2' },
+    { name: 'Олег Пономарь', url: 'https://ponomaroleg.com/wp-json/wp/v2' },
+    { name: 'Тверезо', url: 'https://tverezo.info/wp-json/wp/v2' },
+    { name: 'Факты', url: 'https://fakty.com.ua/wp-json/wp/v2' },
+    { name: 'Український Тиждень', url: 'https://tyzhden.ua/wp-json/wp/v2' },
+    { name: 'НБН', url: 'https://nbnews.com.ua/wp-json/wp/v2' },
+    { name: 'МИГ', url: 'https://mig.com.ua/wp-json/wp/v2' },
+    { name: 'АрміяInform', url: 'https://armyinform.com.ua/wp-json/wp/v2' },
+    { name: 'Днепр Час', url: 'https://dpchas.com.ua/wp-json/wp/v2' },
+    { name: 'MediaPort', url: 'https://mediaport.ua/wp-json/wp/v2' },
+    { name: 'Главное', url: 'https://glavnoe.in.ua/wp-json/wp/v2' },
   ];
-  public activeSiteIndex = 0; // default to first site
+  public activeSiteIndex = 0;
 
   constructor(private http: HttpClient) {}
 
-  // Normalize API base URL (remove trailing slash if present)
+  // Получить URL текущего сайта
   private getApiUrl(): string {
-    const raw = this.sites[this.activeSiteIndex] || this.sites[0];
+    const raw = this.sites[this.activeSiteIndex]?.url || this.sites[0].url;
     return raw.replace(/\/+$/, '');
+  }
+
+  // Получить ИМЯ текущего сайта
+  getActiveSiteName(): string {
+    return this.sites[this.activeSiteIndex]?.name || 'Новости';
+  }
+
+  // Получить весь список сайтов
+  getAvailableSites(): SiteInfo[] {
+    return [...this.sites];
   }
 
   setActiveSite(index: number): void {
     if (index >= 0 && index < this.sites.length) {
       this.activeSiteIndex = index;
       this.categories = [];
-      console.log('Wp Active site index updated to:', index);
-      console.log('Wp Active site URL updated to:', this.sites[index]);
-    } else {
-      console.error('Invalid site index:', index);
     }
   }
 
-  getAvailableSites(): string[] {
-    return [...this.sites];
-  }
+  // getAvailableSites(): string[] {
+  //   return [...this.sites];
+  // }
 
   loadCategories(): Observable<WpCategory[]> {
-    const headers = new HttpHeaders().set('Cache-Control', 'no-cache').set('Pragma', 'no-cache');
     if (this.categories.length) {
       return of(this.categories);
     }
-    return this.http.get<WpCategory[]>(`${this.getApiUrl()}/categories`, { headers }).pipe(
+    return this.http.get<WpCategory[]>(`${this.getApiUrl()}/categories`).pipe(
       map((cats) => {
         if (Array.isArray(cats) && cats.length > 0) {
           this.categories = cats;
@@ -62,14 +82,6 @@ export class WpService {
     return cat ? cat.name : '';
   }
 
-  // Generic get helper
-  get(query: string = '') {
-    const base = this.getApiUrl();
-    const path = query.startsWith('/') ? query : `/${query}`;
-    return this.http.get(base + path);
-  }
-
-  // Simple posts request (only "posts" resource)
   getPosts(
     page = 1,
     category?: number,
@@ -78,7 +90,6 @@ export class WpService {
     order: string = 'desc',
     perPage = 10
   ): Observable<WpPost[]> {
-    const headers = new HttpHeaders().set('Cache-Control', 'no-cache').set('Pragma', 'no-cache');
     let params = new HttpParams()
       .set('page', String(page))
       .set('per_page', String(perPage))
@@ -89,7 +100,7 @@ export class WpService {
     if (orderby) params = params.set('orderby', orderby || '');
     if (order) params = params.set('order', order);
 
-    return this.http.get<WpPost[]>(`${this.getApiUrl()}/posts`, { params, headers }).pipe(
+    return this.http.get<WpPost[]>(`${this.getApiUrl()}/posts`, { params }).pipe(
       catchError((err) => {
         console.error('Wp Error getPosts:', err);
         return of([] as WpPost[]);
@@ -97,14 +108,12 @@ export class WpService {
     );
   }
 
-  // getPosts with meta (pagination headers)
   getPostsWithMeta(
     page = 1,
     perPage = 10,
     category?: number,
     search?: string
   ): Observable<{ posts: WpPost[]; total?: number; totalPages?: number }> {
-    const headers = new HttpHeaders().set('Cache-Control', 'no-cache').set('Pragma', 'no-cache');
     let params = new HttpParams()
       .set('page', String(page))
       .set('per_page', String(perPage))
@@ -113,40 +122,44 @@ export class WpService {
     if (category && category > 0) params = params.set('categories', String(category));
     if (search) params = params.set('search', search.replace(/[<>]/g, ''));
 
-    return this.http.get<WpPost[]>(`${this.getApiUrl()}/posts`, { params, headers, observe: 'response' }).pipe(
-      map((resp: HttpResponse<WpPost[]>) => {
-        const total = resp.headers.get('X-WP-Total');
-        const totalPages = resp.headers.get('X-WP-TotalPages');
-        return {
-          posts: resp.body || [],
-          total: total ? Number(total) : undefined,
-          totalPages: totalPages ? Number(totalPages) : undefined
-        };
-      }),
-      catchError((err) => {
-        console.error('Wp Error getPostsWithMeta:', err);
-        return of({ posts: [], total: 0, totalPages: 0 });
-      })
-    );
+    return this.http
+      .get<WpPost[]>(`${this.getApiUrl()}/posts`, { params, observe: 'response' })
+      .pipe(
+        map((resp: HttpResponse<WpPost[]>) => {
+          const total = resp.headers.get('X-WP-Total');
+          const totalPages = resp.headers.get('X-WP-TotalPages');
+          return {
+            posts: resp.body || [],
+            total: total ? Number(total) : undefined,
+            totalPages: totalPages ? Number(totalPages) : undefined,
+          };
+        }),
+        catchError((err) => {
+          console.error('Wp Error getPostsWithMeta:', err);
+          return of({ posts: [], total: 0, totalPages: 0 });
+        })
+      );
   }
 
   getPost(id: number): Observable<WpPost | null> {
-    const headers = new HttpHeaders().set('Cache-Control', 'no-cache').set('Pragma', 'no-cache');
-    return this.http.get<WpPost>(`${this.getApiUrl()}/posts/${id}`, { params: new HttpParams().set('_embed','1'), headers }).pipe(
-      catchError((err) => {
-        console.error('Wp Error getPost:', err);
-        return of(null);
+    return this.http
+      .get<WpPost>(`${this.getApiUrl()}/posts/${id}`, {
+        params: new HttpParams().set('_embed', '1'),
       })
-    );
+      .pipe(
+        catchError((err) => {
+          console.error('Wp Error getPost:', err);
+          return of(null);
+        })
+      );
   }
 
   getComments(postId: number, page: number = 1): Observable<WpComment[]> {
-    const headers = new HttpHeaders().set('Cache-Control', 'no-cache').set('Pragma', 'no-cache');
     const params = new HttpParams()
       .set('_embed', '1')
       .set('page', page.toString())
       .set('post', postId.toString());
-    return this.http.get<WpComment[]>(`${this.getApiUrl()}/comments`, { params, headers }).pipe(
+    return this.http.get<WpComment[]>(`${this.getApiUrl()}/comments`, { params }).pipe(
       catchError((err) => {
         console.error('Wp Error getComments:', err);
         return of([] as WpComment[]);
@@ -154,7 +167,6 @@ export class WpService {
     );
   }
 
-  // Thumbnail helper
   static getThumbnailUrl(post: WpPost): string | null {
     try {
       const media = post._embedded?.['wp:featuredmedia']?.[0];

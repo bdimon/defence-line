@@ -151,6 +151,10 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  get currentSiteName(): string {
+    return this.wp.getActiveSiteName();
+  }
+
   trackById(index: number, item: WpPost) {
     return item.id;
   }

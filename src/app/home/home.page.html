@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>{{ pageTitle }}</ion-title>
+    <ion-title>{{ currentSiteName }}</ion-title>
   </ion-toolbar>
 
   <ion-toolbar>
@@ -51,7 +51,7 @@
 
       <ion-row>
         <ion-badge [color]="getPrimaryCategoryId(item) | categoryColor">
-          {{ item.categoryName || (item.categories?.[0] ? getCatName(item.categories[0]) : '') }}
+          {{ item.categoryName || (item.categories && item.categories[0] ? getCatName(item.categories[0]) : '') }}
         </ion-badge>
         <ion-badge color="light">
           <ion-icon name="time"></ion-icon>

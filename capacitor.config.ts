@@ -1,9 +1,19 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+type CapacitorConfig = {
+  appId: string;
+  appName: string;
+  webDir: string;
+  plugins?: Record<string, unknown>;
+};
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
+  appId: 'com.example.app',
   appName: 'defense-line',
-  webDir: 'www'
+  webDir: 'www',
+  plugins: {
+    CapacitorHttp: {
+      enabled: true // Автоматически перехватывает HttpClient Angular
+    }
+  }
 };
 
 export default config;
