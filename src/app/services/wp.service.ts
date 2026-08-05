@@ -54,9 +54,6 @@ export class WpService {
     }
   }
 
-  // getAvailableSites(): string[] {
-  //   return [...this.sites];
-  // }
 
   loadCategories(): Observable<WpCategory[]> {
     if (this.categories.length) {

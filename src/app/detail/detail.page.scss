@@ -3,18 +3,19 @@ ion-title {
 }
 
 .detail-container {
+  display: flex;
+  justify-content: center;
   @media (max-width: 768px) {
     padding: 10px;
   }
-  display: flex;
-  justify-content: center;
+
 }
 
 h1 {
   text-align: center; /* Выравниваем заголовок по центру */
   font-size: 2.5rem;
 }
-  
+
 .detail-image {
   display: block;
   max-width: 100%;
