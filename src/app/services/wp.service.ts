@@ -7,6 +7,16 @@ import { WpCategory, WpComment, WpPost } from '../types';
 export interface SiteInfo {
   name: string;
   url: string;
+  /**
+   * true — для сайтов, у которых отключены "красивые" постоянные ссылки
+   * и wp-json недоступен по обычному пути /wp-json/wp/v2/....
+   * В этом случае API доступен только через:
+   *   {origin}/index.php?rest_route=/wp/v2/{endpoint}
+   * (пример: defence-line.info). url при этом всё равно указывается
+   * в привычном виде 'https://origin/wp-json/wp/v2' — реальный запрос
+   * строится автоматически в buildEndpoint().
+   */
+  useRestRoute?: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -16,6 +26,8 @@ export class WpService {
 
   public sites: SiteInfo[] = [
     { name: 'Defense Line', url: 'https://defence-line.org/wp-json/wp/v2' },
+    { name: 'Лінія Оборони', url: 'https://defence-line.info/wp-json/wp/v2', useRestRoute: true },
+    { name: 'Defence News', url: 'https://dl-news.defence-line.org/wp-json/wp/v2', useRestRoute: true },
     { name: 'Олег Пономарь', url: 'https://ponomaroleg.com/wp-json/wp/v2' },
     { name: 'Тверезо', url: 'https://tverezo.info/wp-json/wp/v2' },
     { name: 'Факты', url: 'https://fakty.com.ua/wp-json/wp/v2' },
@@ -31,10 +43,44 @@ export class WpService {
 
   constructor(private http: HttpClient) {}
 
-  // Получить URL текущего сайта
-  private getApiUrl(): string {
-    const raw = this.sites[this.activeSiteIndex]?.url || this.sites[0].url;
-    return raw.replace(/\/+$/, '');
+  // Получить текущий сайт
+  private getActiveSite(): SiteInfo {
+    return this.sites[this.activeSiteIndex] || this.sites[0];
+  }
+
+  /**
+   * Строит URL и (при необходимости) дополнительные query-параметры
+   * для конкретного эндпоинта ('/posts', '/posts/123', '/categories', ...),
+   * учитывая, нужен ли сайту режим rest_route.
+   */
+  private buildEndpoint(endpoint: string): { url: string; extraParams?: HttpParams } {
+    const site = this.getActiveSite();
+    const raw = site.url.replace(/\/+$/, '');
+
+    if (site.useRestRoute) {
+      // raw имеет вид 'https://defence-line.info/wp-json/wp/v2'
+      // нужно получить origin отдельно и "логический" путь без /wp-json
+      const originMatch = raw.match(/^(https?:\/\/[^/]+)/);
+      const origin = originMatch ? originMatch[1] : raw;
+      const restPath = raw.replace(origin, '').replace(/^\/wp-json/, '') || '/wp/v2';
+
+      return {
+        url: `${origin}/index.php`,
+        extraParams: new HttpParams().set('rest_route', `${restPath}${endpoint}`),
+      };
+    }
+
+    return { url: `${raw}${endpoint}` };
+  }
+
+  /** Объединяет обычные HttpParams с extraParams из buildEndpoint(). */
+  private mergeParams(params: HttpParams, extra?: HttpParams): HttpParams {
+    if (!extra) return params;
+    let merged = params;
+    extra.keys().forEach((key) => {
+      merged = merged.set(key, extra.get(key) as string);
+    });
+    return merged;
   }
 
   // Получить ИМЯ текущего сайта
@@ -59,7 +105,10 @@ export class WpService {
     if (this.categories.length) {
       return of(this.categories);
     }
-    return this.http.get<WpCategory[]>(`${this.getApiUrl()}/categories`).pipe(
+    const { url, extraParams } = this.buildEndpoint('/categories');
+    const params = this.mergeParams(new HttpParams(), extraParams);
+
+    return this.http.get<WpCategory[]>(url, { params }).pipe(
       map((cats) => {
         if (Array.isArray(cats) && cats.length > 0) {
           this.categories = cats;
@@ -97,7 +146,10 @@ export class WpService {
     if (orderby) params = params.set('orderby', orderby || '');
     if (order) params = params.set('order', order);
 
-    return this.http.get<WpPost[]>(`${this.getApiUrl()}/posts`, { params }).pipe(
+    const { url, extraParams } = this.buildEndpoint('/posts');
+    params = this.mergeParams(params, extraParams);
+
+    return this.http.get<WpPost[]>(url, { params }).pipe(
       catchError((err) => {
         console.error('Wp Error getPosts:', err);
         return of([] as WpPost[]);
@@ -119,8 +171,11 @@ export class WpService {
     if (category && category > 0) params = params.set('categories', String(category));
     if (search) params = params.set('search', search.replace(/[<>]/g, ''));
 
+    const { url, extraParams } = this.buildEndpoint('/posts');
+    params = this.mergeParams(params, extraParams);
+
     return this.http
-      .get<WpPost[]>(`${this.getApiUrl()}/posts`, { params, observe: 'response' })
+      .get<WpPost[]>(url, { params, observe: 'response' })
       .pipe(
         map((resp: HttpResponse<WpPost[]>) => {
           const total = resp.headers.get('X-WP-Total');
@@ -139,10 +194,11 @@ export class WpService {
   }
 
   getPost(id: number): Observable<WpPost | null> {
+    const { url, extraParams } = this.buildEndpoint(`/posts/${id}`);
+    const params = this.mergeParams(new HttpParams().set('_embed', '1'), extraParams);
+
     return this.http
-      .get<WpPost>(`${this.getApiUrl()}/posts/${id}`, {
-        params: new HttpParams().set('_embed', '1'),
-      })
+      .get<WpPost>(url, { params })
       .pipe(
         catchError((err) => {
           console.error('Wp Error getPost:', err);
@@ -152,11 +208,15 @@ export class WpService {
   }
 
   getComments(postId: number, page: number = 1): Observable<WpComment[]> {
-    const params = new HttpParams()
+    let params = new HttpParams()
       .set('_embed', '1')
       .set('page', page.toString())
       .set('post', postId.toString());
-    return this.http.get<WpComment[]>(`${this.getApiUrl()}/comments`, { params }).pipe(
+
+    const { url, extraParams } = this.buildEndpoint('/comments');
+    params = this.mergeParams(params, extraParams);
+
+    return this.http.get<WpComment[]>(url, { params }).pipe(
       catchError((err) => {
         console.error('Wp Error getComments:', err);
         return of([] as WpComment[]);
