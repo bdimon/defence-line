@@ -22,10 +22,9 @@ export interface SiteInfo {
 @Injectable({ providedIn: 'root' })
 
 export class WpService {
-  public categories: WpCategory[] = [];
+  private categories: WpCategory[] = [];
 
-  public sites: SiteInfo[] = [
-    { name: 'Defense Line', url: 'https://defence-line.org/wp-json/wp/v2' },
+  private readonly sites: SiteInfo[] = [
     { name: 'Лінія Оборони', url: 'https://defence-line.info/wp-json/wp/v2', useRestRoute: true },
     { name: 'Defence News', url: 'https://dl-news.defence-line.org/wp-json/wp/v2', useRestRoute: true },
     { name: 'Олег Пономарь', url: 'https://ponomaroleg.com/wp-json/wp/v2' },
@@ -34,7 +33,6 @@ export class WpService {
     { name: 'Український Тиждень', url: 'https://tyzhden.ua/wp-json/wp/v2' },
     { name: 'НБН', url: 'https://nbnews.com.ua/wp-json/wp/v2' },
     { name: 'МИГ', url: 'https://mig.com.ua/wp-json/wp/v2' },
-    { name: 'АрміяInform', url: 'https://armyinform.com.ua/wp-json/wp/v2' },
     { name: 'Днепр Час', url: 'https://dpchas.com.ua/wp-json/wp/v2' },
     { name: 'MediaPort', url: 'https://mediaport.ua/wp-json/wp/v2' },
     { name: 'Главное', url: 'https://glavnoe.in.ua/wp-json/wp/v2' },
@@ -81,6 +79,38 @@ export class WpService {
       merged = merged.set(key, extra.get(key) as string);
     });
     return merged;
+  }
+
+  private static sanitizeSearchQuery(search?: string): string | undefined {
+    const cleaned = search?.trim().replace(/[<>]/g, '');
+    return cleaned ? cleaned : undefined;
+  }
+
+  private createBaseParams(page: number, perPage: number): HttpParams {
+    return new HttpParams()
+      .set('page', String(page))
+      .set('per_page', String(perPage))
+      .set('_embed', '1');
+  }
+
+  private createPostsParams(
+    page: number,
+    perPage: number,
+    category?: number,
+    search?: string,
+    orderby?: string,
+    order: string = 'desc'
+  ): HttpParams {
+    let params = this.createBaseParams(page, perPage);
+
+    if (category && category > 0) params = params.set('categories', String(category));
+
+    const sanitizedSearch = WpService.sanitizeSearchQuery(search);
+    if (sanitizedSearch) params = params.set('search', sanitizedSearch);
+    if (orderby) params = params.set('orderby', orderby || '');
+    if (order) params = params.set('order', order);
+
+    return params;
   }
 
   // Получить ИМЯ текущего сайта
@@ -136,18 +166,11 @@ export class WpService {
     order: string = 'desc',
     perPage = 10
   ): Observable<WpPost[]> {
-    let params = new HttpParams()
-      .set('page', String(page))
-      .set('per_page', String(perPage))
-      .set('_embed', '1');
-
-    if (category && category > 0) params = params.set('categories', String(category));
-    if (search) params = params.set('search', search.replace(/[<>]/g, ''));
-    if (orderby) params = params.set('orderby', orderby || '');
-    if (order) params = params.set('order', order);
-
     const { url, extraParams } = this.buildEndpoint('/posts');
-    params = this.mergeParams(params, extraParams);
+    const params = this.mergeParams(
+      this.createPostsParams(page, perPage, category, search, orderby, order),
+      extraParams
+    );
 
     return this.http.get<WpPost[]>(url, { params }).pipe(
       catchError((err) => {
@@ -163,16 +186,9 @@ export class WpService {
     category?: number,
     search?: string
   ): Observable<{ posts: WpPost[]; total?: number; totalPages?: number }> {
-    let params = new HttpParams()
-      .set('page', String(page))
-      .set('per_page', String(perPage))
-      .set('_embed', '1');
-
-    if (category && category > 0) params = params.set('categories', String(category));
-    if (search) params = params.set('search', search.replace(/[<>]/g, ''));
-
+    const paramSet = this.createPostsParams(page, perPage, category, search);
     const { url, extraParams } = this.buildEndpoint('/posts');
-    params = this.mergeParams(params, extraParams);
+    const params = this.mergeParams(paramSet, extraParams);
 
     return this.http
       .get<WpPost[]>(url, { params, observe: 'response' })
