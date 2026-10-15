@@ -32,6 +32,21 @@ h1 {
 
 }
 
+:host ::ng-deep .detail-content img {
+  display: block;
+  width: auto !important;
+  max-width: 100% !important;
+  height: auto !important;
+  object-fit: contain;
+  margin: 1rem auto;
+}
+
+:host ::ng-deep .detail-content figure {
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
 ion-badge {
   /* Используем flex для выравнивания содержимого */
   display: inline-flex;

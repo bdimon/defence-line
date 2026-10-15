@@ -29,6 +29,8 @@ import { CategoryColorPipe } from '../pipes/category-color.pipe';
 })
 export class DetailPage implements OnInit {
   post: WpPost | null = null;
+  mainImageUrl: string | null = null;
+  contentHtml = '';
   comments: WpComment[] = [];
   isLoading = false;
   page = 1;
@@ -49,6 +51,7 @@ export class DetailPage implements OnInit {
       this.id = id;
       this.api.getPost(id).subscribe(post => {
         this.post = post;
+        this.preparePostImages(post);
         // После загрузки поста — сбросить комментарии и загрузить первую страницу
         this.page = 1;
         this.comments = [];
@@ -60,6 +63,21 @@ export class DetailPage implements OnInit {
       // id некорректный
       console.error('Некорректный id:', id);
     }
+  }
+
+  private preparePostImages(post: WpPost | null): void {
+    const rendered = post?.content?.rendered || '';
+    const firstImage = rendered.match(
+      /<figure\b[^>]*>\s*<img\b[^>]*src=["']([^"']+)["'][^>]*>\s*<\/figure>/i
+    ) || rendered.match(/<img\b[^>]*src=["']([^"']+)["'][^>]*>/i);
+    const featuredMedia = post?._embedded?.['wp:featuredmedia']?.[0];
+    const featuredUrl = featuredMedia?.source_url ||
+      featuredMedia?.media_details?.sizes?.full?.source_url ||
+      featuredMedia?.media_details?.sizes?.large?.source_url ||
+      null;
+
+    this.mainImageUrl = firstImage?.[1] || featuredUrl;
+    this.contentHtml = firstImage ? rendered.replace(firstImage[0], '') : rendered;
   }
 
   getComments(event?: any) {

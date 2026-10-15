@@ -10,17 +10,9 @@
 <ion-content padding>
   <div *ngIf="post">
   <h1 [innerHTML]= "post.title.rendered"></h1>
-  <div *ngIf="post._embedded && post._embedded['wp:featuredmedia'] && post._embedded['wp:featuredmedia'][0]?.media_details?.sizes" class="detail-container">
+  <div *ngIf="mainImageUrl" class="detail-container">
     <img
-      [src]="
-        post._embedded['wp:featuredmedia'][0].media_details.sizes.large?.source_url ||
-        post._embedded['wp:featuredmedia'][0].media_details.sizes.full?.source_url ||
-        post._embedded['wp:featuredmedia'][0].media_details.sizes.medium_large?.source_url ||
-        post._embedded['wp:featuredmedia'][0].media_details.sizes['content-single']?.source_url ||
-        post._embedded['wp:featuredmedia'][0].media_details.sizes['content-list']?.source_url ||
-        post._embedded['wp:featuredmedia'][0].media_details.sizes.thumbnail?.source_url ||
-        post._embedded['wp:featuredmedia'][0].media_details.sizes.medium?.source_url
-      "
+      [src]="mainImageUrl"
       alt="Post image"
       class="detail-image"
     />
@@ -42,7 +34,7 @@
         {{ post._embedded.author?.[0]?.name }}
       </ion-badge>
     </ion-row>
-    <div  padding [innerHTML]="post.content.rendered | highlight: searchTerm"></div>
+    <div padding [innerHTML]="contentHtml | highlight: searchTerm"></div>
   </div>
   </div>  
 
