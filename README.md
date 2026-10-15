@@ -89,37 +89,16 @@ src/
 
 ## 📱 Сборка под мобильные устройства (Capacitor)
 
-Если вы планируете собирать приложение под Android или iOS с помощью **Capacitor**:
+Android-проект уже подключён через **Capacitor**. Для сборки нужны Node.js/npm, JDK 21 и Android SDK (platform 35).
 
-1. Инициализируйте Capacitor в проекте:
-```bash
-npx cap init "Defense Line" "com.defenseline.app"
+1. Установите зависимости: `npm install`.
+2. Соберите и синхронизируйте приложение: `npm run android:sync`.
+3. Создайте отладочный APK: `npm run android:build`.
+4. APK появится в `android/app/build/outputs/apk/debug/app-debug.apk`.
+5. Чтобы открыть нативный проект в Android Studio, выполните `npm run android:open`.
 
-```
-
-
-2. Добавьте целевые платформы:
-```bash
-npx cap add android
-npx cap add ios
-
-```
-
-
-3. Сберите проект и синхронизируйте файлы:
-```bash
-npm run build
-npx cap sync
-
-```
-
-
-4. Откройте проект в Android Studio или Xcode:
-```bash
-npx cap open android
-npx cap open ios
-
-```
+Для установки на устройство включите USB debugging и выполните `adb install -r android/app/build/outputs/apk/debug/app-debug.apk`.
+Перед публикацией в Google Play необходимо заменить временный идентификатор приложения `info.defenceline.app` на окончательный и настроить release-подпись.
 
 
 

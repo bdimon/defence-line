@@ -6,8 +6,8 @@ type CapacitorConfig = {
 };
 
 const config: CapacitorConfig = {
-  appId: 'com.example.app',
-  appName: 'defense-line',
+  appId: 'info.defenceline.app',
+  appName: 'Defence Line',
   webDir: 'www',
   plugins: {
     CapacitorHttp: {
