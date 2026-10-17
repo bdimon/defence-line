@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import {
+  IonApp,
   IonHeader,
   IonToolbar,
   IonTitle,
@@ -32,6 +33,7 @@ import {
 
 
 const ION_ELEMENTS = [
+  IonApp,
   IonHeader,
   IonToolbar,
   IonTitle,

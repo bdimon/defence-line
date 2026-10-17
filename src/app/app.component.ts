@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router'; // Добавляем NavigationEnd
 import { WpService } from './services/wp.service';
 import { IonicElementsModule } from '../app/modules/ionic-elements.module'; // Import the consolidated module
-import {IonRouterOutlet, 
-  MenuController } from '@ionic/angular/standalone'
+import { IonRouterOutlet, MenuController, Platform } from '@ionic/angular/standalone';
+import { App } from '@capacitor/app';
 import { NgFor } from '@angular/common';
 import { filter } from 'rxjs/operators'; // Добавляем filter
 import { WpCategory } from './types';
@@ -21,11 +21,32 @@ import { CategoryColorPipe } from './pipes/category-color.pipe'; // Import the p
     CategoryColorPipe
   ],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
+  @ViewChild(IonRouterOutlet) routerOutlet!: IonRouterOutlet;
   categories: WpCategory[] = [];
   selectedCategoryId: number = 0; // Инициализируем с 'Все' (ID 0)
 
-  constructor(public api: WpService, private router: Router, private menuCtrl: MenuController) {} // Инжектируем MenuController
+  constructor(
+    public api: WpService,
+    private router: Router,
+    private menuCtrl: MenuController,
+    private platform: Platform
+  ) {} // Инжектируем MenuController
+
+  ngAfterViewInit() {
+    // Capacitor dispatches Ionic's DOM backbutton event when this listener exists.
+    void App.addListener('backButton', () => {});
+
+    // Run after overlays and menus, but before Ionic's router-pop handler.
+    this.platform.backButton.subscribeWithPriority(1, (processNextHandler) => {
+      if (this.routerOutlet.canGoBack()) {
+        processNextHandler();
+        return;
+      }
+
+      void App.exitApp();
+    });
+  }
 
   ngOnInit() {
     this.api.loadCategories().subscribe((cats) => {
