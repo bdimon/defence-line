@@ -3,13 +3,13 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title text-center padding [innerHTML]="post?.title?.rendered"></ion-title>
+    <ion-title class="ion-text-center" text-center padding [innerHTML]="post?.title?.rendered"></ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
   <div *ngIf="post">
-  <h1 [innerHTML]= "post.title.rendered"></h1>
+  <h1 [innerHTML]= "post.title.rendered" class="ion-text-center"></h1>
   <div *ngIf="mainImageUrl" class="detail-container">
     <img
       [src]="mainImageUrl"

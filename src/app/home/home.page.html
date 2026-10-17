@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>{{ currentSiteName }}</ion-title>
+    <ion-title class="ion-text-center">{{ currentSiteName }}</ion-title>
   </ion-toolbar>
 
   <ion-toolbar>
@@ -34,6 +34,7 @@
   <ion-card
     *ngFor="let item of items; trackBy: trackById"
     [routerLink]="['/detail', item.id]"
+    [queryParams]="{ searchTerm: searchTerm }"
     [state]="{ post: item, siteIndex: wp.activeSiteIndex }"
     button="true"
   >

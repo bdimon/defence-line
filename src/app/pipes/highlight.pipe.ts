@@ -1,23 +1,27 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-
 @Pipe({
   name: 'highlight',
-  standalone: true
+  standalone: true,
 })
 export class HighlightPipe implements PipeTransform {
+  constructor(private sanitizer: DomSanitizer) {}
 
- 
-constructor(private sanitizer: DomSanitizer) {}
+  private escapeRegExp(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
 
-  transform(value: string, searchTerm: string): SafeHtml {
-    if (!value || !searchTerm) {
-      return this.sanitizer.bypassSecurityTrustHtml(value);
+  transform(value: string | null | undefined, searchTerm: string | null | undefined): SafeHtml {
+    const safeValue = value ?? '';
+    const normalizedTerm = searchTerm?.trim();
+
+    if (!safeValue || !normalizedTerm) {
+      return this.sanitizer.bypassSecurityTrustHtml(safeValue);
     }
 
-    const regex = new RegExp(searchTerm, 'gi'); // 'gi' для глобального и регистронезависимого поиска
-    const highlightedText = value.replace(regex, (match) => `<span class="highlight">${match}</span>`);
+    const regex = new RegExp(this.escapeRegExp(normalizedTerm), 'gi');
+    const highlightedText = safeValue.replace(regex, (match) => `<span class="highlight">${match}</span>`);
 
     return this.sanitizer.bypassSecurityTrustHtml(highlightedText);
   }

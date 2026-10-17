@@ -94,7 +94,7 @@ export class HomeComponent implements OnInit {
           (p as any)._thumb = (WpService.getThumbnailUrl as any)(p) || 'assets/placeholder.png';
         });
 
-        console.log('post._thumb values:', processedData.map(p => (p as any)._thumb));
+         //console.log('post._thumb values:', processedData.map(p => (p as any)._thumb));
 
         if (this.page === 1) this.items = processedData;
         else this.items = [...this.items, ...processedData];

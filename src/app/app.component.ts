@@ -61,13 +61,13 @@ export class AppComponent implements OnInit {
     this.api.setActiveSite(nextIndex); // Update the active site in WpService
     this.router.navigate(['/'], { queryParams: { cat_id: 0 }, replaceUrl: true });
 
-    console.log(`App Switched to site: ${availableSites[nextIndex]}`);
+    //console.log(`App Switched to site: ${availableSites[nextIndex]}`);
 
     // Reload categories explicitly
     this.api.loadCategories().subscribe({
       next: (cats) => {
         this.categories = cats;
-        console.log('App Categories reloaded from:', availableSites[nextIndex]);
+        //console.log('App Categories reloaded from:', availableSites[nextIndex]);
         this.router.navigate(['/home'], { queryParams: { cat_id: 0 }, replaceUrl: true });
 
       },
