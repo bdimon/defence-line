@@ -7,7 +7,7 @@ import { App } from '@capacitor/app';
 import { NgFor } from '@angular/common';
 import { filter } from 'rxjs/operators'; // Добавляем filter
 import { WpCategory } from './types';
-import { CategoryColorPipe } from './pipes/category-color.pipe'; // Import the pipe
+// import { CategoryColorPipe } from './pipes/category-color.pipe'; // Import the pipe
 
 @Component({
   selector: 'app-root',
@@ -18,7 +18,7 @@ import { CategoryColorPipe } from './pipes/category-color.pipe'; // Import the p
     IonicElementsModule, // Use the consolidated module
     NgFor,
     IonRouterOutlet,
-    CategoryColorPipe
+    //CategoryColorPipe
   ],
 })
 export class AppComponent implements OnInit, AfterViewInit {
@@ -88,7 +88,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.api.loadCategories().subscribe({
       next: (cats) => {
         this.categories = cats;
-        //console.log('App Categories reloaded from:', availableSites[nextIndex]);
+        console.log('App Categories reloaded from:', availableSites[nextIndex], 'Categories:', cats);
         this.router.navigate(['/home'], { queryParams: { cat_id: 0 }, replaceUrl: true });
 
       },
